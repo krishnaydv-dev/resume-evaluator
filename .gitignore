@@ -1,0 +1,15 @@
+# Dependencies
+/vendor/
+
+# Environment & config (keep API keys safe!)
+config/db.php
+
+# Uploaded resumes (personal data)
+/uploads/*
+!uploads/.gitkeep
+
+# OS files
+.DS_Store
+
+# Composer
+composer.phar
