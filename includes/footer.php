@@ -6,7 +6,7 @@
      ============================================ -->
 
 <footer class="footer">
-    <p>© <?php echo date('Y'); ?> Resume Evaluator | Built with Google Gemini AI</p>
+    <p>© <?php echo date('Y'); ?> Resume Evaluator </p>
     <!-- date('Y') auto prints current year — no need to update manually -->
 </footer>
 
