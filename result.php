@@ -2,18 +2,14 @@
 $pageTitle = "Evaluation Result";
 require_once 'includes/header.php';
 
-// Auth Guard
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: login.php');
     exit();
 }
 
 require_once 'config/db.php';
 
 $userId = $_SESSION['user_id'];
-
-// Get evaluation ID from URL
-
 $evalId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($evalId === 0) {
@@ -32,7 +28,6 @@ $query = $conn->prepare("
     JOIN job_descriptions j ON e.jd_id = j.id
     WHERE e.id = ? AND e.user_id = ?
 ");
-
 $query->bind_param("ii", $evalId, $userId);
 $query->execute();
 $eval = $query->get_result()->fetch_assoc();
@@ -42,13 +37,10 @@ if (!$eval) {
     exit();
 }
 
-// Decode JSON strings back to PHP arrays
-
 $matchedSkills = json_decode($eval['matched_skills'], true) ?? [];
 $missingSkills = json_decode($eval['missing_skills'], true) ?? [];
 $strengths     = json_decode($eval['strengths'], true) ?? [];
 $suggestions   = json_decode($eval['suggestions'], true) ?? [];
-
 
 function getScoreClass($score) {
     if ($score >= 70) return 'score-good';
@@ -59,17 +51,18 @@ function getScoreClass($score) {
 
 <div class="container">
 
-    <!-- Page Header -->
     <div class="page-header">
-        <h2>📊 Evaluation Result</h2>
-        <div class="result-meta">
-            <span>📄 <?php echo htmlspecialchars($eval['filename']); ?></span>
-            <span>💼 <?php echo htmlspecialchars($eval['jd_title']); ?></span>
-            <span>📅 <?php echo date('d M Y, h:i A', strtotime($eval['created_at'])); ?></span>
+        <div>
+            <h2><i class="fas fa-chart-bar"></i> Evaluation Result</h2>
+            <div class="result-meta">
+                <span><i class="fas fa-file-pdf"></i> <?php echo htmlspecialchars($eval['filename']); ?></span>
+                <span><i class="fas fa-briefcase"></i> <?php echo htmlspecialchars($eval['jd_title']); ?></span>
+                <span><i class="fas fa-calendar"></i> <?php echo date('d M Y, h:i A', strtotime($eval['created_at'])); ?></span>
+            </div>
         </div>
     </div>
 
-    <!-- SCORE CARDS-->
+    <!-- Score Cards -->
     <div class="scores-grid">
 
         <div class="score-card score-card-main">
@@ -98,11 +91,11 @@ function getScoreClass($score) {
 
     </div>
 
-    <!--SKILLS ANALYSIS-->
+    <!-- Skills Analysis -->
     <div class="two-col">
 
         <div class="card">
-            <h3>✅ Matched Skills</h3>
+            <h3><i class="fas fa-circle-check"></i> Matched Skills</h3>
             <p class="card-subtitle">Skills found in both your resume and the JD</p>
             <?php if (!empty($matchedSkills)): ?>
                 <div class="skills-list">
@@ -118,7 +111,7 @@ function getScoreClass($score) {
         </div>
 
         <div class="card">
-            <h3>❌ Missing Skills</h3>
+            <h3><i class="fas fa-circle-xmark"></i> Missing Skills</h3>
             <p class="card-subtitle">Skills required by JD but not found in resume</p>
             <?php if (!empty($missingSkills)): ?>
                 <div class="skills-list">
@@ -135,14 +128,15 @@ function getScoreClass($score) {
 
     </div>
 
-    <!--STRENGTHS -->
+    <!-- Strengths -->
     <div class="card">
-        <h3>💪 Strengths</h3>
+        <h3><i class="fas fa-dumbbell"></i> Strengths</h3>
         <p class="card-subtitle">What works well in your resume for this role</p>
         <?php if (!empty($strengths)): ?>
             <ul class="feedback-list">
                 <?php foreach ($strengths as $strength): ?>
                     <li class="feedback-item feedback-positive">
+                        <i class="fas fa-check"></i>
                         <?php echo htmlspecialchars($strength); ?>
                     </li>
                 <?php endforeach; ?>
@@ -152,14 +146,15 @@ function getScoreClass($score) {
         <?php endif; ?>
     </div>
 
-    <!--SUGGESTIONS-->
+    <!-- Suggestions -->
     <div class="card">
-        <h3>🎯 Suggestions for Improvement</h3>
+        <h3><i class="fas fa-bullseye"></i> Suggestions for Improvement</h3>
         <p class="card-subtitle">Specific actions to improve your resume for this role</p>
         <?php if (!empty($suggestions)): ?>
             <ul class="feedback-list">
                 <?php foreach ($suggestions as $suggestion): ?>
                     <li class="feedback-item feedback-suggestion">
+                        <i class="fas fa-lightbulb"></i>
                         <?php echo htmlspecialchars($suggestion); ?>
                     </li>
                 <?php endforeach; ?>
@@ -169,11 +164,17 @@ function getScoreClass($score) {
         <?php endif; ?>
     </div>
 
-    <!--ACTION BUTTONS-->
+    <!-- Action Buttons -->
     <div class="result-actions">
-        <a href="upload.php" class="btn-primary">🔄 Evaluate Another Resume</a>
-        <a href="history.php" class="btn-secondary">📋 View All Evaluations</a>
-        <a href="dashboard.php" class="btn-secondary">🏠 Back to Dashboard</a>
+        <a href="upload.php" class="btn-primary">
+            <i class="fas fa-rotate-right"></i> Evaluate Another Resume
+        </a>
+        <a href="history.php" class="btn-secondary">
+            <i class="fas fa-clock-rotate-left"></i> View All Evaluations
+        </a>
+        <a href="dashboard.php" class="btn-secondary">
+            <i class="fas fa-house"></i> Back to Dashboard
+        </a>
     </div>
 
 </div>

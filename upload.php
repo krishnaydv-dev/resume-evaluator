@@ -4,7 +4,7 @@ require_once 'includes/header.php';
 
 // Auth Guard
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: login.php');
     exit();
 }
 
@@ -54,7 +54,7 @@ $savedJDs = $jdQuery->get_result();
                     style="display:none"
                 >
                 <label for="resumeFile" class="upload-label">
-                    <div class="upload-icon">📄</div>
+                    <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <div id="uploadText">
                         <strong>Click to upload</strong> or drag and drop
                         <br>PDF files only

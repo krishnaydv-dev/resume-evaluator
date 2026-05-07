@@ -33,6 +33,10 @@ $pageTitle = $pageTitle ?? 'Resume Evaluator';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Fonts — Inter is the most popular modern UI font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 — free icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title><?php echo $pageTitle; ?> | Resume Evaluator</title>
 
     <!-- Our main stylesheet -->
@@ -50,7 +54,7 @@ $pageTitle = $pageTitle ?? 'Resume Evaluator';
 <?php if (isset($_SESSION['user_id'])): ?>
 <nav class="navbar">
     <div class="nav-brand">
-        📄 Resume Evaluator
+       <i class="fas fa-file-alt"></i> Resume Evaluator
     </div>
     <ul class="nav-links">
         <li><a href="/dashboard.php">Dashboard</a></li>
@@ -60,7 +64,7 @@ $pageTitle = $pageTitle ?? 'Resume Evaluator';
     </ul>
     <div class="nav-user">
         <!-- Show logged in user's name from session -->
-        👤 <?php echo htmlspecialchars($_SESSION['user_name']); ?>
+        <i class="fas fa-circle-user"></i> <?php echo htmlspecialchars($_SESSION['user_name']); ?>
         <!-- htmlspecialchars() prevents XSS attacks —
              converts < > & characters to safe HTML entities -->
     </div>

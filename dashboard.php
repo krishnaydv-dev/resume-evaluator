@@ -4,7 +4,7 @@ $pageTitle = "Dashboard";
 require_once 'includes/header.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: login.php');
     exit();
 }
 
@@ -72,19 +72,19 @@ $recentEvals = $recentQuery->get_result();
     <div class="stats-grid">
 
         <div class="stat-card">
-            <div class="stat-icon">📄</div>
+            <div class="stat-icon"><i class="fas fa-file-pdf"></i></div>
             <div class="stat-number"><?php echo $totalResumes; ?></div>
             <div class="stat-label">Resumes Uploaded</div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">🔍</div>
+            <div class="stat-icon"><i class="fas fa-magnifying-glass"></i></div>
             <div class="stat-number"><?php echo $totalEvals; ?></div>
             <div class="stat-label">Evaluations Done</div>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">⭐</div>
+            <div class="stat-icon"><i class="fas fa-star"></i></div>
             <div class="stat-number"><?php echo $avgScore; ?>%</div>
             <div class="stat-label">Average Score</div>
         </div>

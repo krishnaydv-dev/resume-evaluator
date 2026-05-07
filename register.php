@@ -2,7 +2,7 @@
 session_start();
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php');
+    header('Location: login.php');
     exit();
 }
 
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <p class="auth-switch">
             Already have an account?
-            <a href="index.php">Login here</a>
+            <a href="login.php">Login here</a>
         </p>
     </div>
 </div>

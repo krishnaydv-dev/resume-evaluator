@@ -1,66 +1,10 @@
 <?php
-
 session_start();
 
+// If already logged in skip landing page
 if (isset($_SESSION['user_id'])) {
     header('Location: dashboard.php');
-    exit(); 
-}
-
-$error = '';
-$success = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    // require_once here because we need $conn
-    require_once 'config/db.php';
-
-    $email    = trim($_POST['email']);
-    $password = trim($_POST['password']);
-
-    // Basic Validation
- 
-    if (empty($email) || empty($password)) {
-        $error = "Please fill in all fields.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = "Please enter a valid email address.";
-        // filter_var() is PHP's built-in input validator
-    } else {
-
-        // Query Database
-
-        $stmt = $conn->prepare("SELECT id, name, password FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows === 1) {
-            // User found with that email
-            $user = $result->fetch_assoc();
-
-            // Verify Password
-  
-            if (password_verify($password, $user['password'])) {
-
-                // ✅ Login successful!
-                // Store user data in session
-                $_SESSION['user_id']   = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-
-                // Redirect to dashboard
-                header('Location: dashboard.php');
-                exit();
-
-            } else {
-                $error = "Invalid email or password.";
-            }
-        } else {
-            $error = "Invalid email or password.";
-
-        }
-        $stmt->close();
-    }
+    exit();
 }
 ?>
 
@@ -69,74 +13,240 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Resume Evaluator</title>
+    <title>Resume Evaluator — AI Powered Resume Analysis</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<body class="auth-page">
+<body class="landing-page">
 
-<div class="auth-container">
-
-    <!-- Logo / Branding -->
-    <div class="auth-brand">
-        <h1>📄 Resume Evaluator</h1>
-        <p>AI-powered resume analysis</p>
-    </div>
-
-    <!-- Login Form -->
-    <div class="auth-card">
-        <h2>Welcome Back</h2>
-
-        <?php if (!empty($error)): ?>
-            <div class="alert alert-error">
-                <?php echo htmlspecialchars($error); ?>
+    <!-- ============================================
+         NAVBAR
+         Simple top bar with logo + login/register
+         ============================================ -->
+    <nav class="landing-nav">
+        <div class="landing-nav-inner">
+            <div class="nav-brand">
+                <i class="fas fa-file-alt"></i> Resume Evaluator
             </div>
-        <?php endif; ?>
-
-        <?php if (!empty($success)): ?>
-            <div class="alert alert-success">
-                <?php echo htmlspecialchars($success); ?>
+            <div class="landing-nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it Works</a>
+                <a href="login.php" class="btn-nav-login">Login</a>
+                <a href="register.php" class="btn-nav-register">Get Started Free</a>
             </div>
-        <?php endif; ?>
+        </div>
+    </nav>
 
-        <form action="index.php" method="POST">
+    <!-- ============================================
+         HERO SECTION
+         First thing visitor sees — must be impactful
+         ============================================ -->
+    <section class="hero">
+        <div class="hero-inner">
 
-
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input 
-                    type="email" 
-                    id="email"
-                    name="email" 
-                    placeholder="you@example.com"
-                    value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
-                    required
-                >
+            <div class="hero-badge">
+                <i class="fas fa-bolt"></i> Powered by Google Gemini AI
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input 
-                    type="password" 
-                    id="password"
-                    name="password" 
-                    placeholder="Enter your password"
-                    required
-                >
+            <h1 class="hero-title">
+                Get Your Resume<br>
+                <span class="hero-highlight">AI Evaluated</span><br>
+                in Seconds
+            </h1>
+
+            <p class="hero-subtitle">
+                Upload your resume, paste a job description and get instant 
+                AI-powered feedback — scores, skill gaps, strengths and 
+                actionable suggestions to land your dream job.
+            </p>
+
+            <div class="hero-actions">
+                <a href="register.php" class="btn-hero-primary">
+                    <i class="fas fa-rocket"></i> Start for Free
+                </a>
+                <a href="login.php" class="btn-hero-secondary">
+                    <i class="fas fa-arrow-right-to-bracket"></i> Login
+                </a>
             </div>
 
-            <button type="submit" class="btn-primary">
-                Login
-            </button>
+            <!-- Social proof -->
+            <div class="hero-proof">
+                <div class="proof-item">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <span>AI Powered Analysis</span>
+                </div>
+                <div class="proof-divider">•</div>
+                <div class="proof-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>Secure & Private</span>
+                </div>
+                <div class="proof-divider">•</div>
+                <div class="proof-item">
+                    <i class="fas fa-bolt"></i>
+                    <span>Results in Seconds</span>
+                </div>
+            </div>
 
-        </form>
+        </div>
+    </section>
 
-        <p class="auth-switch">
-            Don't have an account? 
-            <a href="register.php">Register here</a>
-        </p>
-    </div>
-</div>
+    <!-- ============================================
+         HOW IT WORKS SECTION
+         3 simple steps
+         ============================================ -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-container">
 
-<script src="/js/main.js"></script>
+            <div class="section-label">Simple Process</div>
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">
+                Get detailed resume feedback in three simple steps
+            </p>
+
+            <div class="steps-grid">
+
+                <div class="step-card">
+                    <div class="step-number">01</div>
+                    <div class="step-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Upload Resume</h3>
+                    <p>Upload your resume as a PDF file. Our system securely processes and extracts all content from it.</p>
+                </div>
+
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">02</div>
+                    <div class="step-icon">
+                        <i class="fas fa-paste"></i>
+                    </div>
+                    <h3>Paste Job Description</h3>
+                    <p>Copy and paste the job description from LinkedIn, Naukri, or any job portal directly into the tool.</p>
+                </div>
+
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">03</div>
+                    <div class="step-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Get AI Feedback</h3>
+                    <p>Receive detailed scores, matched skills, missing skills, strengths and improvement suggestions instantly.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FEATURES SECTION
+         ============================================ -->
+    <section class="features" id="features">
+        <div class="section-container">
+
+            <div class="section-label">What You Get</div>
+            <h2 class="section-title">Everything You Need</h2>
+            <p class="section-subtitle">
+                Comprehensive resume analysis to help you stand out
+            </p>
+
+            <div class="features-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-blue">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <h3>Match Score</h3>
+                    <p>Get an overall match percentage showing how well your resume fits the job description.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-green">
+                        <i class="fas fa-circle-check"></i>
+                    </div>
+                    <h3>Skill Analysis</h3>
+                    <p>See exactly which skills you have that match the JD and which ones you're missing.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-purple">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Strengths</h3>
+                    <p>Understand what makes your resume strong for this specific role and company.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-orange">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Suggestions</h3>
+                    <p>Get specific, actionable tips to improve your resume and increase your chances.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-red">
+                        <i class="fas fa-clock-rotate-left"></i>
+                    </div>
+                    <h3>History</h3>
+                    <p>Track all your past evaluations and compare how different resumes perform.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon feature-icon-teal">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h3>Secure & Private</h3>
+                    <p>Your resume data is private to your account and never shared with anyone.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         CTA SECTION
+         Final push to register
+         ============================================ -->
+    <section class="cta-section">
+        <div class="section-container">
+            <h2>Ready to Evaluate Your Resume?</h2>
+            <p>Join and get AI-powered feedback on your resume today — completely free.</p>
+            <a href="register.php" class="btn-hero-primary">
+                <i class="fas fa-rocket"></i> Get Started Free
+            </a>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer class="landing-footer">
+        <div class="landing-footer-inner">
+            <div class="footer-brand">
+                <i class="fas fa-file-alt"></i> Resume Evaluator
+            </div>
+            <p class="footer-tagline">AI-powered resume analysis using Google Gemini</p>
+            <div class="footer-links">
+                <a href="login.php">Login</a>
+                <a href="register.php">Register</a>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How it Works</a>
+            </div>
+            <p class="footer-copy">© <?php echo date('Y'); ?> Resume Evaluator. Built with PHP + Google Gemini AI.</p>
+        </div>
+    </footer>
+
 </body>
 </html>
